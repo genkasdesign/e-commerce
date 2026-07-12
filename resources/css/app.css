@@ -1,0 +1,86 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* ===== Base sombre ===== */
+@layer base {
+    body {
+        background-color: #111111;
+        color: #f3f4f6;
+        transition: none;
+    }
+}
+
+/* ===== Composants ===== */
+@layer components {
+    .card {
+        @apply rounded-xl shadow-md overflow-hidden border border-gray-700 transition-all duration-300;
+        background-color: #1f1f1f;
+    }
+    .btn-primary {
+        @apply bg-brand-red hover:bg-brand-redDark text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    }
+    .btn-success {
+        @apply bg-brand-red hover:bg-brand-redDark text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    }
+    .btn-danger {
+        @apply bg-brand-redDark hover:bg-red-900 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    }
+    .btn-outline {
+        @apply border border-brand-red text-brand-red hover:bg-brand-red hover:text-white font-medium py-2 px-4 rounded-lg transition-all duration-200;
+    }
+}
+
+/* ===== Liens de navigation (sombre) ===== */
+.nav-link {
+    @apply font-medium transition-colors duration-200;
+    color: #e5e7eb; /* gris clair */
+    position: relative;
+    text-decoration: none;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 15%;
+    width: 0;
+    height: 3px;
+    background-color: #E63946;
+    border-radius: 4px;
+    transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 70%;
+}
+
+.nav-link:hover {
+    color: #E63946 !important;
+}
+
+.nav-link.active {
+    color: #E63946 !important;
+    font-weight: 600;
+}
+
+/* ===== Logo ===== */
+.logo {
+    color: #E63946 !important;
+    text-decoration: none !important;
+}
+.logo:hover {
+    color: #C62828 !important;
+    text-decoration: none !important;
+}
+.logo::after {
+    display: none !important;
+}
+
+/* ===== Dates et adresses (visibles) ===== */
+.order-date,
+.order-address-title,
+.order-address-content {
+    color: #e5e7eb !important;
+}

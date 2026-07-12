@@ -1,0 +1,57 @@
+<?php $__env->startSection('content'); ?>
+<div class="w-full max-w-md px-4">
+    <div class="card p-8">
+        <h2 class="text-2xl font-bold text-white text-center mb-6">Créer un compte</h2>
+
+        <?php if($errors->any()): ?>
+            <div class="bg-red-900/30 border-l-4 border-red-500 text-red-300 p-4 mb-4 rounded-r-lg shadow-sm">
+                <ul class="list-disc pl-5">
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li><?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="<?php echo e(route('register')); ?>">
+            <?php echo csrf_field(); ?>
+
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Nom</label>
+                <input type="text" name="name" id="name" value="<?php echo e(old('name')); ?>" 
+                       class="w-full rounded-lg border-gray-600 bg-gray-800 text-white shadow-sm focus:border-brand-red focus:ring-brand-red" 
+                       required autofocus>
+            </div>
+
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                <input type="email" name="email" id="email" value="<?php echo e(old('email')); ?>" 
+                       class="w-full rounded-lg border-gray-600 bg-gray-800 text-white shadow-sm focus:border-brand-red focus:ring-brand-red" 
+                       required>
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Mot de passe</label>
+                <input type="password" name="password" id="password" 
+                       class="w-full rounded-lg border-gray-600 bg-gray-800 text-white shadow-sm focus:border-brand-red focus:ring-brand-red" 
+                       required>
+            </div>
+
+            <div class="mb-4">
+                <label for="password_confirmation" class="block text-sm font-medium text-gray-300 mb-1">Confirmer le mot de passe</label>
+                <input type="password" name="password_confirmation" id="password_confirmation" 
+                       class="w-full rounded-lg border-gray-600 bg-gray-800 text-white shadow-sm focus:border-brand-red focus:ring-brand-red" 
+                       required>
+            </div>
+
+            <button type="submit" class="btn-primary w-full py-3">S'inscrire</button>
+
+            <p class="text-center text-gray-400 text-sm mt-4">
+                Déjà un compte ? 
+                <a href="<?php echo e(route('login')); ?>" class="text-brand-red hover:underline">Se connecter</a>
+            </p>
+        </form>
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.auth', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\site-eCommerce\ecommerce\resources\views/auth/register.blade.php ENDPATH**/ ?>
