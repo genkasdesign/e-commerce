@@ -1,7 +1,7 @@
 services:
   - type: web
     name: genshop
-    runtime: php82
+    runtime: php
     buildCommand: composer install --no-dev --optimize-autoloader && npm install && npm run build
     startCommand: php artisan serve --host=0.0.0.0 --port=10000
     envVars:
@@ -16,15 +16,15 @@ services:
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: ton-host-aiven           # remplace par ton host
+        value: ton-host-aiven
       - key: DB_PORT
-        value: ton-port-aiven           # remplace par ton port
+        value: ton-port-aiven
       - key: DB_DATABASE
         value: defaultdb
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
-        value: ton-mot-de-passe-aiven   # remplace
+        value: ton-mot-de-passe-aiven
       - key: SESSION_DRIVER
         value: file
       - key: CACHE_STORE
