@@ -23,10 +23,10 @@ services:
         value: production
 
       - key: APP_DEBUG
-        value: false
+        value: "false"
 
       - key: APP_KEY
-        generateValue: true
+        value: base64:btd78c5ftvZDajJEZAp0CWzLCkWKyUv1sKPH4FBx1ms=
 
       - key: APP_URL
         sync: false
