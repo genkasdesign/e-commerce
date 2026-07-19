@@ -18,6 +18,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
+use App\Models\User;
 
 // Redirection de la racine vers le dashboard
 Route::get('/', function () {
@@ -107,6 +108,26 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Exports
     Route::get('/export/orders', [ExportController::class, 'orders'])->name('export.orders');
     Route::get('/export/clients', [ExportController::class, 'clients'])->name('export.clients');
+});
+
+// ⚠️ ROUTE TEMPORAIRE POUR CRÉER UN ADMIN (À SUPPRIMER APRÈS UTILISATION)
+Route::get('/create-admin', function () {
+    // Vérifier si l'admin existe déjà pour éviter les doublons
+    if (User::where('email', 'admin@exemple.com')->exists()) {
+        return 'Un administrateur existe déjà. Connectez-vous avec admin@exemple.com / password';
+    }
+
+    $user = User::create([
+        'name' => 'Admin',
+        'email' => 'admin@exemple.com',
+        'password' => bcrypt('password'),
+        'is_admin' => true,
+    ]);
+
+    return '✅ Admin créé avec succès !<br>
+            <strong>Email :</strong> admin@exemple.com<br>
+            <strong>Mot de passe :</strong> password<br>
+            <a href="/login">Se connecter</a>';
 });
 
 // Route de test
