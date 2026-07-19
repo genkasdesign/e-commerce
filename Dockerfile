@@ -24,6 +24,9 @@ RUN composer install --no-dev --optimize-autoloader
 RUN npm install
 RUN npm run build
 
+RUN php artisan config:clear
+RUN php artisan cache:clear
+
 # Préparer les dossiers Laravel
 RUN mkdir -p storage/framework/cache \
     storage/framework/sessions \
