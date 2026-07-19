@@ -1,7 +1,7 @@
 services:
   - type: web
     name: genshop
-    runtime: php
+    runtime: docker
     plan: free
     region: virginia
 
