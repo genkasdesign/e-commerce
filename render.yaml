@@ -2,32 +2,77 @@ services:
   - type: web
     name: genshop
     runtime: php
-    buildCommand: composer install --no-dev --optimize-autoloader && npm install && npm run build
-    startCommand: php artisan serve --host=0.0.0.0 --port=10000
+    plan: free
+    region: virginia
+
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan config:clear
+      php artisan route:clear
+      php artisan view:clear
+      npm install
+      npm run build
+
+    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+
     envVars:
+      - key: APP_NAME
+        value: GenShop
+
       - key: APP_ENV
         value: production
+
       - key: APP_DEBUG
         value: false
-      - key: APP_URL
-        value: https://genshop.onrender.com
+
       - key: APP_KEY
         generateValue: true
-      - key: DB_CONNECTION
-        value: mysql
-      - key: DB_HOST
-        value: ton-host-aiven
-      - key: DB_PORT
-        value: ton-port-aiven
-      - key: DB_DATABASE
-        value: defaultdb
-      - key: DB_USERNAME
-        value: avnadmin
-      - key: DB_PASSWORD
-        value: ton-mot-de-passe-aiven
-      - key: SESSION_DRIVER
-        value: file
+
+      - key: APP_URL
+        value: https://genshop.onrender.com
+
+      - key: LOG_CHANNEL
+        value: stack
+
+      - key: LOG_LEVEL
+        value: error
+
       - key: CACHE_STORE
         value: file
-      - key: MAIL_MAILER
-        value: log
+
+      - key: SESSION_DRIVER
+        value: file
+
+      - key: QUEUE_CONNECTION
+        value: sync
+
+      - key: FILESYSTEM_DISK
+        value: local
+
+      - key: DB_CONNECTION
+        value: pgsql
+
+      - key: DB_HOST
+        fromDatabase:
+          name: ecommerce-db
+          property: host
+
+      - key: DB_PORT
+        fromDatabase:
+          name: ecommerce-db
+          property: port
+
+      - key: DB_DATABASE
+        fromDatabase:
+          name: ecommerce-db
+          property: database
+
+      - key: DB_USERNAME
+        fromDatabase:
+          name: ecommerce-db
+          property: user
+
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: ecommerce-db
+          property: password
