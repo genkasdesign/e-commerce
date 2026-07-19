@@ -13,7 +13,7 @@
 </head>
 <body class="font-sans antialiased bg-gray-950 text-gray-200">
     <div class="min-h-screen flex flex-col bg-gray-950">
-        <!-- ⚠️ NAVIGATION EN PREMIER -->
+        <!-- NAVIGATION EN PREMIER -->
         @include('layouts.navigation')
 
         @if (isset($header))
