@@ -17,6 +17,8 @@ WORKDIR /var/www/html
 
 COPY . .
 
+RUN rm -f .env
+
 RUN composer install --no-dev --optimize-autoloader
 
 RUN npm install
@@ -29,6 +31,12 @@ RUN mkdir -p storage/framework/cache \
     bootstrap/cache
 
 RUN chmod -R 775 storage bootstrap/cache
+
+# Nettoyer les anciens caches Laravel
+RUN php artisan config:clear || true
+RUN php artisan cache:clear || true
+RUN php artisan route:clear || true
+RUN php artisan view:clear || true
 
 EXPOSE 10000
 
