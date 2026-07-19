@@ -11,23 +11,25 @@ RUN apt-get update && apt-get install -y \
     npm \
     && docker-php-ext-install pdo pdo_pgsql zip
 
+# Installer Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+# Copier le projet
 COPY . .
 
+# Supprimer un éventuel .env local
 RUN rm -f .env
 
+# Installer les dépendances PHP
 RUN composer install --no-dev --optimize-autoloader
 
+# Installer et compiler Vite/Tailwind
 RUN npm install
 RUN npm run build
 
-RUN php artisan config:clear
-RUN php artisan cache:clear
-
-# Préparer les dossiers Laravel
+# Préparer Laravel
 RUN mkdir -p storage/framework/cache \
     storage/framework/sessions \
     storage/framework/views \
@@ -35,18 +37,11 @@ RUN mkdir -p storage/framework/cache \
 
 RUN chmod -R 775 storage bootstrap/cache
 
-# Nettoyer les anciens caches Laravel
-RUN php artisan config:clear || true
-RUN php artisan cache:clear || true
-RUN php artisan route:clear || true
-RUN php artisan view:clear || true
-
-RUN chmod -R 775 storage bootstrap/cache
-
-COPY start.sh /start.sh
-
-RUN chmod +x /start.sh
-
 EXPOSE 10000
 
-CMD ["/start.sh"]
+# Nettoyer le cache au démarrage puis lancer Laravel
+CMD php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan route:clear && \
+    php artisan view:clear && \
+    php artisan serve --host=0.0.0.0 --port=$PORT
