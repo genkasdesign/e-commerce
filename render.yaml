@@ -11,9 +11,9 @@ services:
       php artisan cache:clear
       php artisan route:clear
       php artisan view:clear
+      php artisan migrate --force
       npm install
       npm run build
-
 
     envVars:
       - key: APP_NAME
