@@ -52,10 +52,14 @@ class OrderController extends Controller
 
         session()->forget('cart');
 
-        // Emails
-        Mail::to($order->user->email)->send(new OrderConfirmation($order));
-        Mail::to(config('mail.admin_email', 'admin@monshop.com'))->send(new NewOrderNotification($order));
-
+        // Emails (avec gestion d'erreur)
+        try {
+            Mail::to($order->user->email)->send(new OrderConfirmation($order));
+            Mail::to(config('mail.admin_email', 'admin@monshop.com'))->send(new NewOrderNotification($order));
+        } catch (\Exception $e) {
+            // On log l'erreur mais on continue pour ne pas bloquer la commande
+            \Log::error('Erreur envoi email : ' . $e->getMessage());
+        }
         // Notifications
         Notification::create([
             'user_id' => $order->user_id,
