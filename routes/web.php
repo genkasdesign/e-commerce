@@ -19,6 +19,7 @@ use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 
 // Redirection de la racine vers le dashboard
 Route::get('/', function () {
@@ -128,6 +129,16 @@ Route::get('/create-admin', function () {
             <strong>Email :</strong> admin@exemple.com<br>
             <strong>Mot de passe :</strong> password<br>
             <a href="/login">Se connecter</a>';
+});
+
+Route::get('/storage-link', function () {
+    $target = storage_path('app/public');
+    $link = public_path('storage');
+    if (file_exists($link)) {
+        return 'Le lien symbolique existe déjà.';
+    }
+    symlink($target, $link);
+    return '✅ Lien symbolique créé avec succès !';
 });
 
 // Route de test

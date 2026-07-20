@@ -161,7 +161,56 @@
 
     <!-- Menu Mobile -->
     <div :class="{'block': open, 'hidden': ! open}" class="md:hidden">
-        <!-- ... contenu existant ... -->
+        <div class="pt-2 pb-3 space-y-1 bg-gray-900 border-t border-gray-700">
+            <!-- Liens principaux -->
+            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-base font-medium nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">Accueil</a>
+
+            @auth
+                @if(auth()->user()->isAdmin())
+                    <!-- Admin -->
+                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-base font-medium nav-link">Dashboard</a>
+                    <a href="{{ route('admin.products.index') }}" class="block px-4 py-2 text-base font-medium nav-link">Gestion produits</a>
+                    <a href="{{ route('admin.categories.index') }}" class="block px-4 py-2 text-base font-medium nav-link">Catégories</a>
+                    <a href="{{ route('admin.orders.index') }}" class="block px-4 py-2 text-base font-medium nav-link">Commandes</a>
+                    <a href="{{ route('admin.clients.index') }}" class="block px-4 py-2 text-base font-medium nav-link">Clients</a>
+                @else
+                    <!-- Client -->
+                    <a href="{{ route('cart.index') }}" class="block px-4 py-2 text-base font-medium nav-link">Panier</a>
+                    <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-base font-medium nav-link">Mes commandes</a>
+                    <a href="{{ route('wishlist.index') }}" class="block px-4 py-2 text-base font-medium nav-link">Favoris</a>
+                @endif
+            @endauth
+
+            <!-- Pages communes (client ou invité) -->
+            @auth
+                @if(!auth()->user()->isAdmin())
+                    <a href="{{ route('contact') }}" class="block px-4 py-2 text-base font-medium nav-link">Contact</a>
+                    <a href="{{ route('faq') }}" class="block px-4 py-2 text-base font-medium nav-link">FAQ</a>
+                    <a href="{{ route('about') }}" class="block px-4 py-2 text-base font-medium nav-link">À propos</a>
+                @endif
+            @else
+                <a href="{{ route('contact') }}" class="block px-4 py-2 text-base font-medium nav-link">Contact</a>
+                <a href="{{ route('faq') }}" class="block px-4 py-2 text-base font-medium nav-link">FAQ</a>
+                <a href="{{ route('about') }}" class="block px-4 py-2 text-base font-medium nav-link">À propos</a>
+            @endauth
+
+            <!-- Profil et déconnexion (si connecté) -->
+            @auth
+                <div class="border-t border-gray-700 pt-4 pb-2">
+                    <div class="px-4 py-1 text-sm text-gray-400">{{ auth()->user()->email }}</div>
+                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-base font-medium nav-link">Profil</a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="w-full text-left px-4 py-2 text-base font-medium text-brand-red hover:bg-red-900/20 transition">Log Out</button>
+                    </form>
+                </div>
+            @else
+                <div class="border-t border-gray-700 pt-4 pb-2">
+                    <a href="{{ route('login') }}" class="block px-4 py-2 text-base font-medium nav-link">Login</a>
+                    <a href="{{ route('register') }}" class="block px-4 py-2 text-base font-medium text-brand-red hover:bg-red-900/20 transition">Register</a>
+                </div>
+            @endauth
+        </div>
     </div>
 </nav>
 
