@@ -80,8 +80,6 @@ class OrderController extends Controller
             ]);
         }
 
-        dd('Redirection vers payment.show', $order->id);
-
         return redirect()->route('payment.show', $order)->with('success', 'Commande validée ! Veuillez procéder au paiement.');
     }
 
