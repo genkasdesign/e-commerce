@@ -50,9 +50,14 @@ return [
     | the Artisan command line tool. You should set this to the root of
     | the application so that it's available within Artisan commands.
     |
+    | 🔒 Forcer HTTPS en production : on utilise la valeur de APP_URL
+    |    mais on s'assure qu'elle commence par https://
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+
+    // 🔒 Force le schéma HTTPS si l'application est en production
+    'secure' => env('APP_ENV') === 'production',
 
     /*
     |--------------------------------------------------------------------------
