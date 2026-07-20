@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 // Redirection de la racine vers le dashboard
 Route::get('/', function () {
@@ -162,5 +163,29 @@ Route::get('/storage-link', function () {
 });
 // Route de test
 Route::get('/test-produits', [ProductController::class, 'index'])->name('test.produits');
+
+Route::get('/fix-database', function () {
+    try {
+        // Vérifier si la colonne payment_status existe
+        $columns = DB::select("SELECT column_name FROM information_schema.columns WHERE table_name='orders' AND column_name='payment_status'");
+        if (empty($columns)) {
+            // Ajouter les colonnes manquantes (PostgreSQL)
+            DB::statement("ALTER TABLE orders ADD COLUMN payment_status VARCHAR(255) DEFAULT 'pending'");
+            DB::statement("ALTER TABLE orders ADD COLUMN payment_method VARCHAR(255) NULL");
+            DB::statement("ALTER TABLE orders ADD COLUMN currency VARCHAR(3) DEFAULT 'USD'");
+            $result = '✅ Colonnes ajoutées avec succès.';
+        } else {
+            $result = 'ℹ️ Les colonnes existent déjà.';
+        }
+
+        // Recréer le lien symbolique
+        \Artisan::call('storage:link');
+        $result .= '<br>✅ Lien symbolique recréé.';
+
+        return $result;
+    } catch (\Exception $e) {
+        return '❌ Erreur : ' . $e->getMessage();
+    }
+});
 
 require __DIR__.'/auth.php';
