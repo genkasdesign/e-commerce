@@ -198,13 +198,16 @@ Route::get('/fix-database', function () {
 
 Route::get('/fix-reviews', function () {
     try {
-        $exists = DB::select("SELECT column_name FROM information_schema.columns WHERE table_name='reviews' AND column_name='product_id'");
-        if (empty($exists)) {
-            DB::statement("ALTER TABLE reviews ADD COLUMN product_id BIGINT UNSIGNED NULL");
+        // Vérifier si la colonne product_id existe
+        $check = DB::select("SELECT column_name FROM information_schema.columns WHERE table_name='reviews' AND column_name='product_id'");
+        if (empty($check)) {
+            // Ajouter la colonne product_id (BIGINT sans UNSIGNED en PostgreSQL)
+            DB::statement("ALTER TABLE reviews ADD COLUMN product_id BIGINT");
+            // Ajouter la clé étrangère
             DB::statement("ALTER TABLE reviews ADD CONSTRAINT reviews_product_id_foreign FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE");
             return '✅ Colonne product_id ajoutée et clé étrangère créée.';
         } else {
-            return 'ℹ️ La colonne product_id existe déjà.';
+            return 'ℹ️ La colonne product_id existe déjà. Aucune action nécessaire.';
         }
     } catch (\Exception $e) {
         return '❌ Erreur : ' . $e->getMessage();
