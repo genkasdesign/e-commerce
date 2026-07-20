@@ -10,6 +10,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use App\Mail\OrderConfirmation;
 use App\Mail\NewOrderNotification;
 
@@ -57,8 +58,7 @@ class OrderController extends Controller
             Mail::to($order->user->email)->send(new OrderConfirmation($order));
             Mail::to(config('mail.admin_email', 'admin@monshop.com'))->send(new NewOrderNotification($order));
         } catch (\Exception $e) {
-            // On log l'erreur mais on continue pour ne pas bloquer la commande
-            \Log::error('Erreur envoi email : ' . $e->getMessage());
+            Log::error('Erreur envoi email : ' . $e->getMessage());
         }
         // Notifications
         Notification::create([
