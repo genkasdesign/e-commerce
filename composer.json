@@ -25,7 +25,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        } 
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -52,6 +52,10 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
+        ],
+        "post-install-cmd": [
+            "@php artisan package:discover --ansi",
+            "@php -r \"if (getenv('APP_ENV') === 'production') { system('php artisan migrate --force'); system('php artisan storage:link'); }\""
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
