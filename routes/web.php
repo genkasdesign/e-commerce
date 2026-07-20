@@ -141,6 +141,24 @@ Route::get('/storage-link', function () {
     return '✅ Lien symbolique créé avec succès !';
 });
 
+// ⚠️ ROUTES TEMPORAIRES POUR LE DÉPLOIEMENT (À SUPPRIMER APRÈS)
+Route::get('/run-migrations', function () {
+    try {
+        \Artisan::call('migrate', ['--force' => true]);
+        return '✅ Migrations exécutées avec succès !';
+    } catch (\Exception $e) {
+        return '❌ Erreur : ' . $e->getMessage();
+    }
+});
+
+Route::get('/storage-link', function () {
+    try {
+        \Artisan::call('storage:link');
+        return '✅ Lien symbolique créé avec succès !';
+    } catch (\Exception $e) {
+        return '❌ Erreur : ' . $e->getMessage();
+    }
+});
 // Route de test
 Route::get('/test-produits', [ProductController::class, 'index'])->name('test.produits');
 
