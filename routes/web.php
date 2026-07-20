@@ -166,13 +166,13 @@ Route::get('/test-produits', [ProductController::class, 'index'])->name('test.pr
 
 Route::get('/fix-database', function () {
     try {
-        $columns = ['payment_status', 'payment_method', 'currency'];
         $results = [];
 
+        // Vérifier et ajouter les colonnes manquantes
+        $columns = ['payment_status', 'payment_method', 'currency'];
         foreach ($columns as $col) {
-            $check = DB::select("SELECT column_name FROM information_schema.columns WHERE table_name='orders' AND column_name='$col'");
-            if (empty($check)) {
-                // Ajouter la colonne avec le bon type
+            $exists = DB::select("SELECT column_name FROM information_schema.columns WHERE table_name='orders' AND column_name='$col'");
+            if (empty($exists)) {
                 if ($col === 'payment_status') {
                     DB::statement("ALTER TABLE orders ADD COLUMN payment_status VARCHAR(255) DEFAULT 'pending'");
                 } elseif ($col === 'payment_method') {
@@ -187,7 +187,7 @@ Route::get('/fix-database', function () {
         }
 
         // Recréer le lien symbolique
-        \Artisan::call('storage:link');
+        Artisan::call('storage:link');
         $results[] = '✅ Lien symbolique recréé.';
 
         return implode('<br>', $results);
