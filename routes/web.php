@@ -166,23 +166,31 @@ Route::get('/test-produits', [ProductController::class, 'index'])->name('test.pr
 
 Route::get('/fix-database', function () {
     try {
-        // Vérifier si la colonne payment_status existe
-        $columns = DB::select("SELECT column_name FROM information_schema.columns WHERE table_name='orders' AND column_name='payment_status'");
-        if (empty($columns)) {
-            // Ajouter les colonnes manquantes (PostgreSQL)
-            DB::statement("ALTER TABLE orders ADD COLUMN payment_status VARCHAR(255) DEFAULT 'pending'");
-            DB::statement("ALTER TABLE orders ADD COLUMN payment_method VARCHAR(255) NULL");
-            DB::statement("ALTER TABLE orders ADD COLUMN currency VARCHAR(3) DEFAULT 'USD'");
-            $result = '✅ Colonnes ajoutées avec succès.';
-        } else {
-            $result = 'ℹ️ Les colonnes existent déjà.';
+        $columns = ['payment_status', 'payment_method', 'currency'];
+        $results = [];
+
+        foreach ($columns as $col) {
+            $check = DB::select("SELECT column_name FROM information_schema.columns WHERE table_name='orders' AND column_name='$col'");
+            if (empty($check)) {
+                // Ajouter la colonne avec le bon type
+                if ($col === 'payment_status') {
+                    DB::statement("ALTER TABLE orders ADD COLUMN payment_status VARCHAR(255) DEFAULT 'pending'");
+                } elseif ($col === 'payment_method') {
+                    DB::statement("ALTER TABLE orders ADD COLUMN payment_method VARCHAR(255) NULL");
+                } elseif ($col === 'currency') {
+                    DB::statement("ALTER TABLE orders ADD COLUMN currency VARCHAR(3) DEFAULT 'USD'");
+                }
+                $results[] = "✅ Colonne $col ajoutée.";
+            } else {
+                $results[] = "ℹ️ Colonne $col existe déjà.";
+            }
         }
 
         // Recréer le lien symbolique
         \Artisan::call('storage:link');
-        $result .= '<br>✅ Lien symbolique recréé.';
+        $results[] = '✅ Lien symbolique recréé.';
 
-        return $result;
+        return implode('<br>', $results);
     } catch (\Exception $e) {
         return '❌ Erreur : ' . $e->getMessage();
     }
